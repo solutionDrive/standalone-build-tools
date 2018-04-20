@@ -1,6 +1,7 @@
 {
   "name": "solutiondrive/standalone-build-tools",
   "type": "composer-plugin",
+  "license": "MIT",
   "authors": [
     {
       "name": "solutionDrive",

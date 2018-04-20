@@ -1,0 +1,19 @@
+{
+  "name": "solutiondrive/standalone-build-tools",
+  "type": "composer-plugin",
+  "authors": [
+    {
+      "name": "solutionDrive",
+      "email": "entwickler@solutiondrive.de"
+    }
+  ],
+  "require": {
+    "composer-plugin-api": "^1.1"
+  },
+  "autoload": {
+    "classmap": ["BuildToolsLoaderPlugin.php"]
+  },
+  "extra": {
+    "class": "sd\\BuildToolsLoaderPlugin"
+  }
+}

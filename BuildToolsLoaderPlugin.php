@@ -9,9 +9,9 @@
 namespace sd;
 
 use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\EventDispatcher\EventSubscriberInterface;
 
 class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterface
 {

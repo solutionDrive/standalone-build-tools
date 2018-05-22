@@ -9,9 +9,9 @@
 namespace sd;
 
 use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\EventDispatcher\EventSubscriberInterface;
 
 class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterface
 {
@@ -24,6 +24,10 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
     private $toolsToInstall = [
         'behat-standalone.phar'
             => 'http://build-tools.cloud.solutiondrive.de/phar/behat-standalone.php{{PHP_VERSION}}.phar',
+        'ecs-standalone.phar'
+            => 'http://build-tools.cloud.solutiondrive.de/phar/coding-standard-standalone.ecs.php{{PHP_VERSION}}.phar',
+        'easy-coding-standard.yml'
+            => 'http://build-tools.cloud.solutiondrive.de/phar/easy-coding-standard-php{{PHP_VERSION}}.yml',
     ];
 
     public function activate(Composer $composer, IOInterface $io)

@@ -25,7 +25,9 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
         'behat-standalone.phar'
             => 'http://build-tools.cloud.solutiondrive.de/phar/behat-standalone.php{{PHP_VERSION}}.phar',
         'ecs-standalone.phar'
-            => 'http://build-tools.cloud.solutiondrive.de/phar/coding-standard-standalone.ecs3.2.php{{PHP_VERSION}}.phar',
+            => 'http://build-tools.cloud.solutiondrive.de/phar/coding-standard-standalone.ecs.php{{PHP_VERSION}}.phar',
+        'easy-coding-standard.yml'
+            => 'http://build-tools.cloud.solutiondrive.de/phar/easy-coding-standard-php{{PHP_VERSION}}.yml',
     ];
 
     public function activate(Composer $composer, IOInterface $io)

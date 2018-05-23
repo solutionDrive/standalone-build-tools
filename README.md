@@ -21,3 +21,18 @@ You can provide a custom list of files to download by setting:
         ]
     }
 
+For example you can download solutionDrive's builds:
+
+    "config": {
+        "standalone-build-tools": [
+            "phpspec-standalone": "http://build-tools.cloud.solutiondrive.de/phar/phpspec-standalone.php{{PHP_VERSION}}.phar"
+        ]
+    }
+
+Note that ```{{PHP_VERSION}}``` will be replaced by the currently used PHP version, for example: ```5.6``` or ```7.0```.
+
+
+License
+-------
+
+MIT

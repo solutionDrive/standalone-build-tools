@@ -1,0 +1,40 @@
+language: node_js
+dist: trusty
+sudo: false
+node_js:
+  - "10"
+
+
+env:
+  global:
+    - S3_BUCKET="build-tools.cloud.solutiondrive.de"
+    - secure: TnBfgnexsRjFjkWwMrMgfT5xx4EOwgUoghgW39aL1mk0c4hSFyZwMyXCxhm5IS3ZLZPxKmuD3F0PHk46D5If94VQbemdD5YbAU9N8f0SkRvQZXEUWJCIyp/sI/9JzdHmQmZfJ6qBodcZB5a+CQmKpJnkLG/1py/piaAiGxDwYMFXOX/UkndheCOSJbmakGcIxNDALKI1Afs6Ap8TpWPx+sGaj6BrGdy9KVrZyLenpPDopf8UjrE/6mOzy4r94CTG+h+43RcxO9KqQAjcIsk/sAlhG6A9QR/G3eG73l6L/u7duqokRUbZqlheM/lh1zhDwBO1pleB/n83riYqoz6HiRR5V3LdLzVXNEx3CmGmNpUpbbveSP5kLS6d5QUOVPoJ4dpunOqFm6pFVTqwSCOhpwXNwwf6d7xEj5v0l/EvniMQKWx187jJ67TBpLvbjcElo3LF2zDm/jaZGSJWxPcsKOWozkjtUDjLK9geYN5xPF+3ddCSVv1uSO9UbOhfLQtydp9iw/EPc6ly0J6nQr2Qe6TkiHspB5Ksuaox3TIqqf95gpwz4uyiuCEMp+Ic73X7PYku958rtmGXlqoKBG5RoLD2cslqgm96pdZ9n6NUy2dIoVnkExT29YtFDlroILhCN+qk+hERh5PmyHEtRvyD98Z1WvvnBFcc/bOyaCoOxlM=
+    - secure: fVx0faELyLFg///INjIPstZmlgv0fQKyNsTD4kK0l2z/cq6guGVNMxp5j6jYYwEPZia0Zv8cgKDKJS6qCfWtaKVsMNbULfKNCOKe507UHtjP0nz8QULDKbH7twr3ve8r/8d5LR/43Sne3MIKdNSiE+KjeRPM6GqB/VekV8d/FeTcNJaZfGun/V216g2HktWbG1Tw3Q0iJjNPzJgS723eQ3ZccH63KXul3enrFqekhmwhKzk8ZWnh1Ygwt7Lbux7JRa4xXZniRAHrm/A1nb1r81KipmerbeyXEPSzQ5RgiWTOH4R6udKAUuww2bsJa/uRRDIDPjGiO4anTBNRi5ArhH+yzz/9Ypa1faLnpODxRj9iAWhWWXwsJkXTGwkIEGB7hAihYRzs0Zd8hMGpdvy1LzTMXiFZfUbE4F6cj9oye8UnCDiyK/zNHBr2djuAgWJkvosGrUjYw6ov+IolXeAE/h3hS5lLcF/53WaY4R15Jb2mvsy6OrKFL51zToQ0x+xnEROj0/IqadAqP8n3ZoU3nqeUFLh4KE0QOHnMYmt9Yt/v2RILLft4SLRDJbYdZPRg/QfncZBYE+OQJIdPJxS8AOZ+FuUPJ0xtIPiBu3iDTlk6UlG6MuzrP+woYOjIKpyM6ZpwY+Tahj2XgKUx/YTAtwNX4ZKfLuoakUF+Qn/PD1s=
+
+
+install:
+  - npm install showdown
+  - mkdir -p build/
+
+script:
+  - node ./node_modules/showdown/bin/showdown.js makehtml -i README.md -o build/content.html
+  - cat frame_head.html > build/index.html
+  - cat build/content.html >> build/index.html
+  - cat frame_foot.html >> build/index.html
+  - cat build/index.html
+
+before_deploy:
+  - rm -f build/content.html
+
+
+deploy:
+  provider: s3
+  access_key_id: "${S3_ACCESS_KEY}"
+  secret_access_key: "${S3_SECRET_KEY}"
+  bucket: "${S3_BUCKET}"
+  skip_cleanup: true
+  region: "eu-central-1"
+  local_dir: "build"
+  acl: "public-read"
+  on:
+    branch: master

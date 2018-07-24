@@ -50,6 +50,10 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
     public function install()
     {
         $binDir = $this->composer->getConfig()->get('bin-dir');
+
+        // Create bin directory if not existing yet
+        @mkdir($binDir, 0777, true);
+
         $configuredTools = $this->composer->getConfig()->get('standalone-build-tools');
         if (null !== $configuredTools) {
             $this->toolsToInstall = $configuredTools;

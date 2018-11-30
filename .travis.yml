@@ -14,7 +14,7 @@ env:
 
 install:
   - npm install showdown
-  - mkdir -p build/
+  - mkdir -p build/php/
 
 script:
   - node ./node_modules/showdown/bin/showdown.js makehtml -i README.md -o build/content.html
@@ -22,6 +22,7 @@ script:
   - cat build/content.html >> build/index.html
   - cat frame_foot.html >> build/index.html
   - cat build/index.html
+  - cp -f updateRoute53Record.php build/php/updateRoute53Record.php
 
 before_deploy:
   - rm -f build/content.html

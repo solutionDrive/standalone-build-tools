@@ -1,0 +1,50 @@
+name: Test and build
+on: [push, pull_request]
+jobs:
+  test-and-build:
+    name: '[Node 14] test and build'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: npm install
+        run: npm install showdown
+
+      - name: create build dir
+        run: mkdir -p build/php/
+
+      - name: create tmp content file
+        run: node ./node_modules/showdown/bin/showdown.js makehtml -i README.md -o build/content.html
+        shell: bash
+
+      - name: build release content file
+        run: cat frame_head.html > build/index.html && cat build/content.html >> build/index.html && cat frame_foot.html >> build/index.html
+        shell: bash
+
+      - name: show generated release content file
+        run: cat build/index.html
+        shell: bash
+
+      - name: copy route53 update file
+        run: cp -f updateRoute53Record.php build/php/updateRoute53Record.php
+
+      - name: prepare deployment
+        run: rm -f build/content.html
+
+      - name: deploy
+        if:
+          contains('
+          refs/heads/master
+          ', github.ref)
+        uses: shallwefootball/s3-upload-action@master
+        id: S3
+        with:
+          aws_key_id: ${{ secrets.S3_BUILD_ACCESS_KEY }}
+          aws_secret_access_key: ${{ secrets.S3_BUILD_SECRET_KEY }}
+          aws_bucket: ${{ secrets.S3_BUILD_BUCKET }}
+          source_dir: 'build'

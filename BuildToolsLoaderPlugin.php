@@ -38,6 +38,10 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
         $this->io = $io;
     }
 
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        // Nothing do to
+    }
 
     public static function getSubscribedEvents()
     {
@@ -61,10 +65,29 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
 
         foreach ($this->toolsToInstall as $target => $url) {
             $richUrl = $this->getUrlWithoutPlaceholders($url);
-            $fullTarget = $binDir . DIRECTORY_SEPARATOR . $target;
+            $fullTarget = $this->getFullTarget($binDir, $target);
             $this->io->write("Downloading $target from $richUrl ...");
             copy($richUrl, $fullTarget);
             chmod($fullTarget, 0755);
+        }
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        $binDir = $this->composer->getConfig()->get('bin-dir');
+        if (false === dir($binDir)) {
+            // No bin dir -> nothing to do
+            return;
+        }
+
+        foreach ($this->toolsToInstall as $target => $url) {
+            $fullTarget = $this->getFullTarget($binDir, $target);
+            if (false === file_exists($fullTarget)) {
+                continue;
+            }
+
+            $this->io->write("Removing $target ...");
+            unlink($fullTarget);
         }
     }
 
@@ -73,5 +96,10 @@ class BuildToolsLoaderPlugin implements PluginInterface, EventSubscriberInterfac
         $phpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
         $url = preg_replace('/\{\{\s*PHP_VERSION\s*\}\}/i', $phpVersion, $url);
         return $url;
+    }
+
+    private function getFullTarget($binDir, $target)
+    {
+        return $binDir . DIRECTORY_SEPARATOR . $target;
     }
 }
